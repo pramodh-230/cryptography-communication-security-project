@@ -1,0 +1,91 @@
+# Vigenère Cipher encryption algorithm
+def vigenere_encrypt(plaintext, key):
+    ciphertext = ""
+    key_index = 0
+    for char in plaintext:
+        if char.isalpha():
+            key_letter = key[key_index % len(key)]
+            key_shift = ord(key_letter.lower()) - ord('a')
+            if char.isupper():
+                shifted_char = chr((ord(char) - ord('A') + key_shift) % 26 + ord('A'))
+            else:
+                shifted_char = chr((ord(char) - ord('a') + key_shift) % 26 + ord('a'))
+            ciphertext += shifted_char
+            key_index += 1
+        else:
+            ciphertext += char
+    return ciphertext
+
+# Vigenère Cipher decryption algorithm
+def vigenere_decrypt(ciphertext, key):
+    plaintext = ""
+    key_index = 0
+    for char in ciphertext:
+        if char.isalpha():
+            key_letter = key[key_index % len(key)]
+            key_shift = ord(key_letter.lower()) - ord('a')
+            if char.isupper():
+                shifted_char = chr((ord(char) - ord('A') - key_shift) % 26 + ord('A'))
+            else:
+                shifted_char = chr((ord(char) - ord('a') - key_shift) % 26 + ord('a'))
+            plaintext += shifted_char
+            key_index += 1
+        else:
+            plaintext += char
+    return plaintext
+
+# Polybius Cipher encryption algorithm
+def polybius_encrypt(plaintext):
+    grid = [['A', 'B', 'C', 'D', 'E'],
+            ['F', 'G', 'H', 'I', 'K'],
+            ['L', 'M', 'N', 'O', 'P'],
+            ['Q', 'R', 'S', 'T', 'U'],
+            ['V', 'W', 'X', 'Y', 'Z']]
+    ciphertext = ""
+    for char in plaintext:
+        if char.isalpha():
+            char = char.upper()
+            if char == 'J':
+                char = 'I'
+            for i in range(5):
+                for j in range(5):
+                    if grid[i][j] == char:
+                        ciphertext += str(i + 1) + str(j + 1)
+        else:
+            ciphertext += char
+    return ciphertext
+
+# Polybius Cipher decryption algorithm
+def polybius_decrypt(ciphertext):
+    grid = [['A', 'B', 'C', 'D', 'E'],
+            ['F', 'G', 'H', 'I', 'K'],
+            ['L', 'M', 'N', 'O', 'P'],
+            ['Q', 'R', 'S', 'T', 'U'],
+            ['V', 'W', 'X', 'Y', 'Z']]
+    plaintext = ""
+    i = 0
+    while i < len(ciphertext):
+        if ciphertext[i].isdigit() and ciphertext[i+1].isdigit():
+            row = int(ciphertext[i]) - 1
+            col = int(ciphertext[i+1]) - 1
+            plaintext += grid[row][col]
+            i += 2
+        else:
+            plaintext += ciphertext[i]
+            i += 1
+    return plaintext
+
+# Example usage
+plaintext = "bsdcdyvcdshiucnjacnugyvdiybsiucsdchssgyv8e7gvfshiojochvfuyvg977efvgd80vha"
+key = "SECRET"
+encrypted_text = vigenere_encrypt(plaintext, key)
+print("Encrypted Text:", encrypted_text)
+
+decrypted_text = vigenere_decrypt(encrypted_text, key)
+print("Decrypted Text:", decrypted_text)
+
+polybius_encrypted_text = polybius_encrypt(encrypted_text)
+print("Polybius Encrypted Text:", polybius_encrypted_text)
+
+polybius_decrypted_text = polybius_decrypt(polybius_encrypted_text)
+print("Polybius Decrypted Text:", polybius_decrypted_text)
